@@ -90,6 +90,12 @@ namespace DelvUI.Interface.Jobs
                 positions.Add(Config.Position + Config.FirestarterBar.Position);
                 sizes.Add(Config.FirestarterBar.Size);
             }
+            
+            if (Config.SharpcastBar.Enabled && !Config.SharpcastBar.HideWhenInactive)
+            {
+                positions.Add(Config.Position + Config.SharpcastBar.Position);
+                sizes.Add(Config.SharpcastBar.Size);
+            }
 
             return (positions, sizes);
         }
@@ -146,6 +152,10 @@ namespace DelvUI.Interface.Jobs
             if (Config.FirestarterBar.Enabled)
             {
                 DrawFirestarterBar(pos, player);
+            }
+            if (Config.SharpcastBar.Enabled)
+            {
+                DrawSharpcastBar(pos, player);
             }
         }
 
@@ -329,6 +339,15 @@ namespace DelvUI.Interface.Jobs
             }
         }
 
+        protected void DrawSharpcastBar(Vector2 origin, PlayerCharacter player)
+        {
+            BarHud? bar = BarUtilities.GetProcBar(Config.SharpcastBar, player, 867, 30f);
+            if (bar != null)
+            {
+                AddDrawActions(bar.GetDrawActions(origin, Config.SharpcastBar.StrataLevel));
+            }
+        }
+
         protected void DrawThunderDoTBar(Vector2 origin, PlayerCharacter player)
         {
             GameObject? target = Plugin.TargetManager.SoftTarget ?? Plugin.TargetManager.Target;
@@ -371,6 +390,11 @@ namespace DelvUI.Interface.Jobs
             config.FirestarterBar.Label.TextAnchor = DrawAnchor.Left;
             config.FirestarterBar.Label.FrameAnchor = DrawAnchor.Left;
             config.FirestarterBar.Label.Position = new Vector2(2, 0);
+
+            config.SharpcastBar.Label.FontID = FontsConfig.DefaultMediumFontKey;
+            config.SharpcastBar.Label.TextAnchor = DrawAnchor.Left;
+            config.SharpcastBar.Label.FrameAnchor = DrawAnchor.Left;
+            config.SharpcastBar.Label.Position = new Vector2(2, 0);
 
             return config;
         }
@@ -443,6 +467,13 @@ namespace DelvUI.Interface.Jobs
             new(0, -85),
             new(254, 14),
             new PluginConfigColor(new Vector4(255f / 255f, 136f / 255f, 0 / 255f, 100f / 100f))
+        );
+        
+        [NestedConfig("Sharpcast Bar", 70)]
+        public ProgressBarConfig SharpcastBar = new ProgressBarConfig(
+            new(0, -85),
+            new(254, 14),
+            new PluginConfigColor(new Vector4(67f / 255f, 187 / 255f, 255f / 255f, 100f / 100f))
         );
     }
 
